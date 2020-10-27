@@ -1,12 +1,8 @@
 extends KinematicBody2D
 
 var movespeed = 500
-var bulletspeed = 2000
+var bullet_speed = 2000
 var bullet = preload("res://Bullet.tscn")
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
 
 
 # Called when the node enters the scene tree for the first time.
@@ -27,14 +23,15 @@ func _physics_process(_delta):
 	
 	motion = motion.normalized()
 	motion = move_and_slide(motion * movespeed)
-	
 	look_at(get_global_mouse_position())
-	if Input.is_action_pressed("LMB"):
+	
+	if Input.is_action_just_pressed("shoot"):
 		fire()
 
 func fire():
+	print("fire")
 	var bullet_instance = bullet.instance()
-	bullet_instance.position = get_global_position()
+	bullet_instance.position = get_parent().get_node("Player").position
 	bullet_instance.rotation_degrees = rotation_degrees
-	bullet_instance.apply_impulse(Vector2(), Vector2(bulletspeed, 0).rotated(rotation))
-	get_tree().get_root().call_deferred("add child", bullet_instance)
+	bullet_instance.apply_impulse(Vector2(), Vector2(bullet_speed, 0).rotated(rotation))
+	get_tree().get_root().call_deferred("add_child", bullet_instance)
